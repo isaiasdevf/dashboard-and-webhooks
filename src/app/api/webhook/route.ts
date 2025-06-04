@@ -9,3 +9,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ message: "Webhook recibido con éxito" });
 }
+
+export async function GET() {
+  return NextResponse.json({ message: "GET recibido" });
+}
