@@ -3,6 +3,7 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  devIndicators: false,
   async redirects() {
     return [
       {
