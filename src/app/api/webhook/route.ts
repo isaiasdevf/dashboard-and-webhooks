@@ -23,14 +23,20 @@ export async function POST(request: Request) {
 
   console.log("Webhook recibido:", body);
 
-  const phone = "56930189459"; // tu número
-  const apikey = "3587129";
+  const phone = process.env.WHATSAPP_PHONE;
+  const apikey = process.env.WHATSAPP_API_KEY;
+
+  if (!phone || !apikey) {
+    console.error("❌ Número o API Key no definidos en variables de entorno");
+    return NextResponse.json({ error: "Configuración incompleta" }, { status: 500 });
+  }
+
   const message = encodeURIComponent(`📬 Webhook recibido!\n\n${JSON.stringify(body, null, 2)}`);
 
   try {
     await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${message}&apikey=${apikey}`);
   } catch (error) {
-    console.error("Error enviando mensaje a WhatsApp:", error);
+    console.error("❌ Error enviando mensaje a WhatsApp:", error);
   }
 
   return NextResponse.json({ message: "Webhook recibido con éxito" });
