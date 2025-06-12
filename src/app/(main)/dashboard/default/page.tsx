@@ -16,7 +16,7 @@ export default async function Page() {
   const { data: webhookLogs, error } = await supabase
     .from("webhook_logs")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("id", { ascending: false });
 
   if (error) {
     console.error("Error fetching webhook logs:", error);

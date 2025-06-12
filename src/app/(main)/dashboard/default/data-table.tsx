@@ -203,7 +203,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "payload.amount",
     header: () => <div className="w-full text-right">Monto</div>,
     cell: ({ row }) => (
-      <div className="text-right">
+      <div className="text-right text-muted-foreground">
         ${row.original.payload.amount.toLocaleString()}
       </div>
     ),
@@ -392,7 +392,9 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     >
-                      {column.id}
+                      {typeof column.columnDef.header === 'string' 
+                        ? column.columnDef.header 
+                        : column.id.replace('payload.', '')}
                     </DropdownMenuCheckboxItem>
                   );
                 })}
