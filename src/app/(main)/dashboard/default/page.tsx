@@ -1,11 +1,17 @@
 import { cookies } from "next/headers";
 
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@supabase/supabase-js";
 
 import { DataTable } from "./data-table";
 
 export default async function Page() {
-  const supabase = createServerComponentClient({ cookies });
+  // Crear cliente de Supabase con service_role key
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
 
   const { data: webhookLogs, error } = await supabase
     .from("webhook_logs")
