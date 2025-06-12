@@ -1,20 +1,36 @@
-import { ChartAreaInteractive } from "./chart-area-interactive";
-import { DataTable } from "./data-table";
-import data from "./data.json";
-import { SectionCards } from "./section-cards";
+import { cookies } from "next/headers";
 
-export default function Page() {
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+
+import { DataTable } from "./data-table";
+
+export default async function Page() {
+  const supabase = createServerComponentClient({ cookies });
+
+  const { data: webhookLogs, error } = await supabase
+    .from("webhook_logs")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching webhook logs:", error);
+    return <div>Error loading data</div>;
+  }
+
+  // Para debugging
+  console.log("Raw webhook logs:", webhookLogs);
+
+  // Asegurarnos de que los datos tengan la estructura correcta
+  const transformedData = webhookLogs.map((log) => ({
+    payload: log.payload,
+  }));
+
+  // Para debugging
+  console.log("Transformed Data:", transformedData);
+
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="@container/main flex flex-1 flex-col gap-2">
-        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-          <SectionCards />
-          <div className="px-4 lg:px-6">
-            <ChartAreaInteractive />
-          </div>
-          <DataTable data={data} />
-        </div>
-      </div>
+    <div className="container mx-auto py-10">
+      <DataTable data={transformedData} />
     </div>
   );
 }
